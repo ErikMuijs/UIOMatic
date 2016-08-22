@@ -25,8 +25,8 @@
 
 	<!-- NUGET ONLY PROPERTIES -->
 	<PropertyGroup>
-		<NugetPackageName>UI-O-Matic</NugetPackageName>
-		<PackageId>Nibble.Umbraco.UIOMatic</PackageId>
+		<NugetPackageName>Poort80-UI-O-Matic</NugetPackageName>
+		<PackageId>Poort80.Nibble.Umbraco.UIOMatic</PackageId>
 		<Copyright>Tim Geyssens</Copyright>
 		<Owners>Tim Geyssens</Owners>
 		<Summary>Auto generate an integrated crud UI in Umbraco for a db table based on a petapoco poco</Summary>
