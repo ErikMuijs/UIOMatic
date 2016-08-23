@@ -32,6 +32,9 @@ namespace UIOMatic.Trees
                 foreach (var type in types)
                 {
                     var attri = (UIOMaticAttribute)Attribute.GetCustomAttribute(type, typeof(UIOMaticAttribute));
+                    if (attri.HideInMenu)
+                        continue;
+
 
                     if (attri.RenderType == Enums.UIOMaticRenderType.Tree)
                     {
