@@ -154,7 +154,7 @@
           Symbols="true" />
 		  
 		  
-		<Exec WorkingDirectory="$(PackageDir)" Command="$(RootDir)\Tools\NuGet.exe push $(PackageId).$(VersionMajor).$(VersionMinor).$(VersionPatch)-$(VersionSuffix).nupkg $(NuGetApiKey) -source $(NuGetRepository)" />
+		<Exec WorkingDirectory="$(PackageDir)" Command="'$(RootDir)\Tools\NuGet.exe' push $(PackageId).$(VersionMajor).$(VersionMinor).$(VersionPatch)-$(VersionSuffix).nupkg $(NuGetApiKey) -source $(NuGetRepository)" />
 		  
        
 		<RemoveDir Directories="$(BuildNuGetDir)" Condition="Exists('$(BuildNuGetDir)')" />
