@@ -13,5 +13,7 @@ namespace UIOMatic.Models
         public string NameField { get; set; }
 
         public bool ReadOnly { get; set; }
+
+        public string[] ListViewRowCssDecorators { get; set; }
     }
 }

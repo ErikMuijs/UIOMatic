@@ -309,6 +309,8 @@ namespace UIOMatic.Controllers
             if (primKeyAttri.Any())
                 primaryKey = ((PrimaryKeyAttribute)primKeyAttri.First()).Value;
 
+            var allListViewRowCssDecorators = new List<string>();
+
             foreach (var property in currentType.GetProperties())
             {
                 var keyAttri = property.GetCustomAttributes().Where(x => x.GetType() == typeof(PrimaryKeyColumnAttribute));
@@ -322,6 +324,13 @@ namespace UIOMatic.Controllers
                 var nameAttri = property.GetCustomAttributes().Where(x => x.GetType() == typeof(UIOMaticNameFieldAttribute));
                 if (nameAttri.Any())
                     nameField = property.Name;
+
+                var rowCssDecoratorAttributes = property.GetCustomAttributes().Where(x => x.GetType() == typeof(UIOMaticListViewRowCssAttribute)).ToArray();
+                foreach (UIOMaticListViewRowCssAttribute attr in rowCssDecoratorAttributes)
+                {
+                    if (!string.IsNullOrWhiteSpace(attr.Decorator) && attr.IsValid())
+                        allListViewRowCssDecorators.Add(attr.Decorator.Trim());                    
+                }                
             }
 
             return new UIOMaticTypeInfo()
@@ -330,7 +339,8 @@ namespace UIOMatic.Controllers
                 PrimaryKeyColumnName = primaryKey,
                 IgnoreColumnsFromListView = ignoreColumnsFromListView.ToArray(),
                 NameField = nameField,
-                ReadOnly = uioMaticAttri.ReadOnly
+                ReadOnly = uioMaticAttri.ReadOnly,
+                ListViewRowCssDecorators = allListViewRowCssDecorators.ToArray()
             };
         }
 

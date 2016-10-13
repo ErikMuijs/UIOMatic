@@ -40,8 +40,8 @@
 	<PropertyGroup>
 		<VersionMajor>1</VersionMajor>
 		<VersionMinor>8</VersionMinor>
-		<VersionPatch>1</VersionPatch>
-		<VersionSuffix></VersionSuffix>
+		<VersionPatch>2</VersionPatch>
+		<VersionSuffix>p80</VersionSuffix>
 		<UmbracoVersion>7.3.0</UmbracoVersion>
 	</PropertyGroup>
 
@@ -60,7 +60,7 @@
 		<RemoveDir Directories="$(BuildNuGetDir)" Condition="Exists('$(BuildNuGetDir)')" />   
 		<MakeDir Directories="$(BuildNuGetDir)" />  
 		<MakeDir Directories="$(PackageDir)" />
-    <MakeDir Directories="$(AppPluginUmbDir>)" />
+		<MakeDir Directories="$(AppPluginUmbDir>)" />
 	</Target>
 
 	<!-- UPDATE ASSEMBLEY VERSION -->
@@ -71,9 +71,9 @@
 		</Version>
 		<AssemblyInfo CodeLanguage="CS"
 			OutputFile="$(CoreProjectDir)\Properties\VersionInfo.cs"
-			AssemblyVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch)"
-			AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(Build).$(Revision)"
-			AssemblyInformationalVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch)$(VersionSuffix)"/>
+			AssemblyVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch)-$(VersionSuffix)"
+			AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch).$(Build).$(Revision)-$(VersionSuffix)"
+			AssemblyInformationalVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch)-$(VersionSuffix)"/>
 	</Target>
 
 	<!-- COMPILE -->
@@ -127,7 +127,7 @@
 			Title="$(NugetPackageName)"
 			Description="$(Readme)"
 			Summary="$(Summary)"
-			Version="$(VersionMajor).$(VersionMinor).$(VersionPatch)$(VersionSuffix)"
+			Version="$(VersionMajor).$(VersionMinor).$(VersionPatch)-$(VersionSuffix)"
 			MinimumRequiredUmbracoVersion ="$(MinUmbracoVersion)"
 			Authors="$(AuthorName)"
 			Owners="$(Owners)"

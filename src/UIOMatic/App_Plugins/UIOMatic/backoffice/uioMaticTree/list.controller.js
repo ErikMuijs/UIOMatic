@@ -15,6 +15,8 @@
 
         $scope.initialFetch = true;
 
+        $scope.rowCssDecorators = [];
+
         function fetchData() {
             
             uioMaticObjectResource.getPaged($scope.typeName, $scope.itemsPerPage, $scope.currentPage, $scope.initialFetch ? "" : $scope.predicate, $scope.initialFetch ? "" : ($scope.reverse ? "desc" : "asc"), $scope.searchTerm).then(function (resp) {
@@ -27,7 +29,6 @@
                         return $scope.ignoreColumnsFromListView.indexOf(c) == -1;
                     });
                 }
-
                 
             });
         }
@@ -37,7 +38,8 @@
             $scope.predicate = response.data.PrimaryKeyColumnName.replace(' ', '_');
             $scope.ignoreColumnsFromListView = response.data.IgnoreColumnsFromListView;
             $scope.nameField = response.data.NameField.replace(' ', '_');
-            $scope.readOnly = response.data.ReadOnly
+            $scope.readOnly = response.data.ReadOnly;
+            $scope.rowCssDecorators = response.data.ListViewRowCssDecorators;
             fetchData();
 
         });
@@ -118,24 +120,36 @@
         };
 
         $scope.isColumnLinkable = function (column, index) {
-           
+
             if ($scope.nameField.length > 0) {
                 return column == $scope.nameField;
             } else {
-               
+
                 return index == 0
                 || (index == 1 && $scope.cols[0] == $scope.primaryKeyColumnName)
             }
-        }
+        };
 
-        $scope.unCamelCase = function(str)
-        {
+        $scope.unCamelCase = function (str) {
             return str
                 // insert a space between lower & upper
                 .replace(/([a-z])([A-Z])/g, '$1 $2')
                 // space before last upper in a sequence followed by lower
                 .replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
                 // uppercase the first character
-                .replace(/^./, function(str){ return str.toUpperCase(); })
-        }
+                .replace(/^./, function (str) { return str.toUpperCase(); })
+        };
+
+        $scope.hasRowCssDecorator = function (row) {
+            return $scope.rowCssDecorators.length > 0;
+        };
+
+        $scope.getRowCssDecoration = function (row) {
+            var css = '';
+            for (var i = 0; i < $scope.rowCssDecorators.length; i++) {
+                var decorator = new Function('return ' + $scope.rowCssDecorators[i])();
+                css += ' ' + decorator(row);
+            }
+            return css.trim();
+        };
     });
