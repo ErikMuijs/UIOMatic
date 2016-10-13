@@ -3,8 +3,8 @@
 
 	<!-- IMPORTS -->
 	<PropertyGroup>
-		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
-		<MSBuildNugetTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildNugetTasks</MSBuildNugetTasksPath>
+		<MSBuildCommunityTasksPath>$([MSBuild]::Unescape('$(MSBuildProjectDirectory)'))\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+		<MSBuildNugetTasksPath>$([MSBuild]::Unescape('$(MSBuildProjectDirectory)'))\Tools\MSBuildNugetTasks</MSBuildNugetTasksPath>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
@@ -41,6 +41,7 @@
 		<VersionMajor>1</VersionMajor>
 		<VersionMinor>8</VersionMinor>
 		<VersionPatch>$(BuildNumber)</VersionPatch>
+		<VersionPatch Condition="'$(VersionPatch)' == ''">2</VersionPatch>
 		<VersionSuffix>p80</VersionSuffix>
 		<UmbracoVersion>7.3.0</UmbracoVersion>
 	</PropertyGroup>
