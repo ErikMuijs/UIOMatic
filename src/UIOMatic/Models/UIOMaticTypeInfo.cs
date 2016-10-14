@@ -15,5 +15,7 @@ namespace UIOMatic.Models
         public bool ReadOnly { get; set; }
 
         public string[] ListViewRowCssDecorators { get; set; }
+
+        public string[] ListViewLinkColumns { get; set; }
     }
 }

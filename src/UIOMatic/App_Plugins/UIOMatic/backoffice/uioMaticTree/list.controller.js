@@ -16,6 +16,7 @@
         $scope.initialFetch = true;
 
         $scope.rowCssDecorators = [];
+        $scope.linkableColumns = [];
 
         function fetchData() {
             
@@ -40,6 +41,7 @@
             $scope.nameField = response.data.NameField.replace(' ', '_');
             $scope.readOnly = response.data.ReadOnly;
             $scope.rowCssDecorators = response.data.ListViewRowCssDecorators;
+            $scope.linkableColumns = response.data.ListViewLinkColumns;
             fetchData();
 
         });
@@ -120,13 +122,14 @@
         };
 
         $scope.isColumnLinkable = function (column, index) {
-
-            if ($scope.nameField.length > 0) {
+            if ($scope.linkableColumns.length > 0) {
+                return column == $scope.linkableColumns.indexOf(column) > -1
+            }
+            else if ($scope.nameField.length > 0) {
                 return column == $scope.nameField;
-            } else {
-
-                return index == 0
-                || (index == 1 && $scope.cols[0] == $scope.primaryKeyColumnName)
+            }
+            else {
+                return index == 0 || (index == 1 && $scope.cols[0] == $scope.primaryKeyColumnName)
             }
         };
 

@@ -310,6 +310,7 @@ namespace UIOMatic.Controllers
                 primaryKey = ((PrimaryKeyAttribute)primKeyAttri.First()).Value;
 
             var allListViewRowCssDecorators = new List<string>();
+            var allListViewLinkColumns = new List<string>();
 
             foreach (var property in currentType.GetProperties())
             {
@@ -324,6 +325,10 @@ namespace UIOMatic.Controllers
                 var nameAttri = property.GetCustomAttributes().Where(x => x.GetType() == typeof(UIOMaticNameFieldAttribute));
                 if (nameAttri.Any())
                     nameField = property.Name;
+
+                var linkableAttri = property.GetCustomAttributes().Where(x => x.GetType() == typeof(UIOMaticListViewLinkColumnAttribute));
+                if (linkableAttri.Any())
+                    allListViewLinkColumns.Add(property.Name);
 
                 var rowCssDecoratorAttributes = property.GetCustomAttributes().Where(x => x.GetType() == typeof(UIOMaticListViewRowCssAttribute)).ToArray();
                 foreach (UIOMaticListViewRowCssAttribute attr in rowCssDecoratorAttributes)
@@ -340,7 +345,8 @@ namespace UIOMatic.Controllers
                 IgnoreColumnsFromListView = ignoreColumnsFromListView.ToArray(),
                 NameField = nameField,
                 ReadOnly = uioMaticAttri.ReadOnly,
-                ListViewRowCssDecorators = allListViewRowCssDecorators.ToArray()
+                ListViewRowCssDecorators = allListViewRowCssDecorators.ToArray(),
+                ListViewLinkColumns = allListViewLinkColumns.ToArray()
             };
         }
 
