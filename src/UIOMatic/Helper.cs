@@ -42,9 +42,19 @@ namespace UIOMatic
             //if the property type is nullable, we need to get the underlying type of the property
             var targetType = IsNullableType(propertyInfo.PropertyType) ? Nullable.GetUnderlyingType(propertyInfo.PropertyType) : propertyInfo.PropertyType;
 
-            //Returns an System.Object with the specified System.Type and whose value is
-            //equivalent to the specified object.
-            propertyVal = ChangeType(propertyVal, targetType);
+            try
+            {
+                //Returns an System.Object with the specified System.Type and whose value is
+                //equivalent to the specified object.
+                propertyVal = ChangeType(propertyVal, targetType);
+            }
+            catch
+            {
+                if (IsNullableType(propertyInfo.PropertyType) && (propertyVal == null || string.IsNullOrWhiteSpace(propertyVal.ToString())))
+                    propertyVal = null;
+                else
+                    throw;
+            }
 
             //Set the value of the property
             propertyInfo.SetValue(inputObject, propertyVal, null);

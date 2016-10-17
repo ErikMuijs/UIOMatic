@@ -640,24 +640,35 @@ namespace UIOMatic.Controllers
 
             var ar = typeOfObject.Split(',');
             var currentType = Type.GetType(ar[0] + ", " + ar[1]);
-          
+
 
             object ob = Activator.CreateInstance(currentType, null);
 
+            var exs = new List<Exception>();
             var values = (IDictionary<string, object>)objectToValidate;
             foreach (var prop in currentType.GetProperties())
             {
                 var propKey = prop.Name;
-                
 
                 if (values.ContainsKey(propKey))
                 {
-                    Helper.SetValue(ob, prop.Name, values[propKey]);
+                    try
+                    {
+                        Helper.SetValue(ob, prop.Name, values[propKey]);
+                    }
+                    catch (Exception ex)
+                    {                        
+                        exs.Add(new Exception(string.Format(" ({0}) {1} ", propKey, ex.Message), ex));
+                    }
                 }
             }
-                
 
-            return ((IUIOMaticModel) ob).Validate();
+            if (exs.Any())
+            {
+                return exs;
+            }
+
+            return ((IUIOMaticModel)ob).Validate();
         }
 
         public IEnumerable<object> GetFiltered(string typeName, string filterColumn, string filterValue, string sortColumn, string sortOrder)
