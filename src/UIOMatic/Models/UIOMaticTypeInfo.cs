@@ -17,5 +17,7 @@ namespace UIOMatic.Models
         public string[] ListViewRowCssDecorators { get; set; }
 
         public string[] ListViewLinkColumns { get; set; }
+
+        public string[] CustomColumnsOrder { get; set; }
     }
 }

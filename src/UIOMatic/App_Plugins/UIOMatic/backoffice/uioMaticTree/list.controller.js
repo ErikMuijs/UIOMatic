@@ -17,6 +17,7 @@
 
         $scope.rowCssDecorators = [];
         $scope.linkableColumns = [];
+        $scope.customColumnsOrder = [];
 
         function fetchData() {
             
@@ -26,11 +27,24 @@
                 $scope.totalPages = resp.data.TotalPages;
 
                 if ($scope.rows.length > 0) {
-                    $scope.cols = Object.keys($scope.rows[0]).filter(function (c) {
-                        return $scope.ignoreColumnsFromListView.indexOf(c) == -1;
-                    });
-                }
-                
+                    $scope.cols = Object.keys($scope.rows[0])
+                                        .filter(function (c) {
+                                            return $scope.ignoreColumnsFromListView.indexOf(c) == -1;
+                                        })
+                                        .sort(function (x, y) {
+                                            if ($scope.customColumnsOrder.length === 0) { return 0; }
+
+                                            var xIdx = $scope.customColumnsOrder.indexOf(x);
+                                            var yIdx = $scope.customColumnsOrder.indexOf(y);
+
+                                            if (xIdx === yIdx || (xIdx < 0 && yIdx < 0)) { return 0; }                                          
+
+                                            if (xIdx < 0) { return yIdx; }
+                                            if (yIdx < 0) { return xIdx; }
+                                                                                        
+                                            return xIdx < yIdx ? -1 : 1;
+                                        });
+                }                
             });
         }
         uioMaticObjectResource.getType($scope.typeName).then(function (response) {
@@ -42,8 +56,9 @@
             $scope.readOnly = response.data.ReadOnly;
             $scope.rowCssDecorators = response.data.ListViewRowCssDecorators;
             $scope.linkableColumns = response.data.ListViewLinkColumns;
-            fetchData();
+            $scope.customColumnsOrder = response.data.CustomColumnsOrder;
 
+            fetchData();
         });
 
 
@@ -123,7 +138,7 @@
 
         $scope.isColumnLinkable = function (column, index) {
             if ($scope.linkableColumns.length > 0) {
-                return column == $scope.linkableColumns.indexOf(column) > -1
+                return $scope.linkableColumns.indexOf(column) > -1
             }
             else if ($scope.nameField.length > 0) {
                 return column == $scope.nameField;

@@ -262,6 +262,7 @@
     <Compile Include="Attributes\UIOMaticIgnoreFromListViewAttribute.cs" />
     <Compile Include="Attributes\UIOMaticListViewLinkColumnAttribute.cs" />
     <Compile Include="Attributes\UIOMaticListViewRowCssAttribute.cs" />
+    <Compile Include="Attributes\UIOMaticListViewColumnSeqnoAttribute.cs" />
     <Compile Include="Attributes\UIOMaticNameFieldAttribute.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Controllers\FieldApiController.cs" />

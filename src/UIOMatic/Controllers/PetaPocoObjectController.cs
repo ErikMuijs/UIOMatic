@@ -311,6 +311,7 @@ namespace UIOMatic.Controllers
 
             var allListViewRowCssDecorators = new List<string>();
             var allListViewLinkColumns = new List<string>();
+            var customColumnsOrder = new Dictionary<string, int>();
 
             foreach (var property in currentType.GetProperties())
             {
@@ -335,7 +336,22 @@ namespace UIOMatic.Controllers
                 {
                     if (!string.IsNullOrWhiteSpace(attr.Decorator) && attr.IsValid())
                         allListViewRowCssDecorators.Add(attr.Decorator.Trim());                    
-                }                
+                }    
+                
+                var columnSeqnoAttri = property.GetCustomAttributes().Where(x => x.GetType() == typeof(UIOMaticListViewColumnSeqnoAttribute));
+                if (columnSeqnoAttri.Any())
+                {
+                    var seqno = (columnSeqnoAttri.First() as UIOMaticListViewColumnSeqnoAttribute).Seqno;
+
+                    if (customColumnsOrder.ContainsKey(property.Name))
+                        customColumnsOrder[property.Name] = seqno;
+                    else
+                        customColumnsOrder.Add(property.Name, seqno);
+                }
+                else if (!customColumnsOrder.ContainsKey(property.Name))
+                {
+                    customColumnsOrder.Add(property.Name, int.MaxValue);
+                }
             }
 
             return new UIOMaticTypeInfo()
@@ -346,7 +362,8 @@ namespace UIOMatic.Controllers
                 NameField = nameField,
                 ReadOnly = uioMaticAttri.ReadOnly,
                 ListViewRowCssDecorators = allListViewRowCssDecorators.ToArray(),
-                ListViewLinkColumns = allListViewLinkColumns.ToArray()
+                ListViewLinkColumns = allListViewLinkColumns.ToArray(),
+                CustomColumnsOrder = customColumnsOrder.OrderBy(c => c.Value).Select(c => c.Key).ToArray()
             };
         }
 
