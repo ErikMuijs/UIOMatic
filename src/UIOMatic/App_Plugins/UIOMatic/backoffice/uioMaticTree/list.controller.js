@@ -16,6 +16,7 @@
         $scope.initialFetch = true;
 
         $scope.rowCssDecorators = [];
+        $scope.cellContentDecorators = [];
         $scope.linkableColumns = [];
         $scope.customColumnsOrder = [];
 
@@ -55,6 +56,7 @@
             $scope.nameField = response.data.NameField.replace(' ', '_');
             $scope.readOnly = response.data.ReadOnly;
             $scope.rowCssDecorators = response.data.ListViewRowCssDecorators;
+            $scope.cellContentDecorators = response.data.ListViewRowCellContentDecorators;
             $scope.linkableColumns = response.data.ListViewLinkColumns;
             $scope.customColumnsOrder = response.data.CustomColumnsOrder;
 
@@ -169,5 +171,17 @@
                 css += ' ' + decorator(row);
             }
             return css.trim();
+        };
+
+        $scope.getCellContentDecoration = function (row, column) {
+            var content = null;
+            for (var i = 0; i < $scope.cellContentDecorators.length; i++) {
+                var decorator = new Function('return ' + $scope.cellContentDecorators[i])();
+                content = decorator(row, column);
+                if (content != null) {
+                    return content;
+                }
+            }
+            return row[column];
         };
     });

@@ -310,6 +310,7 @@ namespace UIOMatic.Controllers
                 primaryKey = ((PrimaryKeyAttribute)primKeyAttri.First()).Value;
 
             var allListViewRowCssDecorators = new List<string>();
+            var allListViewCellContentDecorators = new List<string>();
             var allListViewLinkColumns = new List<string>();
             var customColumnsOrder = new Dictionary<string, int>();
 
@@ -352,6 +353,14 @@ namespace UIOMatic.Controllers
                 {
                     customColumnsOrder.Add(property.Name, int.MaxValue);
                 }
+
+                var cellContentAttri = property.GetCustomAttributes().Where(x => x.GetType() == typeof(UIOMaticListViewCellContentAttribute));
+                if (cellContentAttri.Any())
+                {
+                    var attr = cellContentAttri.First() as UIOMaticListViewCellContentAttribute;
+                    if (!string.IsNullOrWhiteSpace(attr.Decorator) && attr.IsValid())
+                        allListViewCellContentDecorators.Add(attr.Decorator.Trim());
+                }
             }
 
             return new UIOMaticTypeInfo()
@@ -362,6 +371,7 @@ namespace UIOMatic.Controllers
                 NameField = nameField,
                 ReadOnly = uioMaticAttri.ReadOnly,
                 ListViewRowCssDecorators = allListViewRowCssDecorators.ToArray(),
+                ListViewCellContentDecorators = allListViewCellContentDecorators.ToArray(),
                 ListViewLinkColumns = allListViewLinkColumns.ToArray(),
                 CustomColumnsOrder = customColumnsOrder.OrderBy(c => c.Value).Select(c => c.Key).ToArray()
             };
