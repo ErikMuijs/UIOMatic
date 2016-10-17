@@ -55,7 +55,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="row in rows" ng-class="{selected: isRowSelected(row), '{{getRowCssDecoration(row)}}': hasRowCssDecorator(row)}">
+                            <tr ng-repeat="row in rows" ng-class="{selected: isRowSelected(row)}, '{{getRowCssDecoration(row)}}'">
                                 <td style="width: 35px" ng-hide="readOnly">
                                     <i class="icon icon-edit"></i>
                                     <input type="checkbox" name="selectedItems[]" value="{{getObjectKey(row)}}" ng-checked="isRowSelected(row)" ng-click="toggleSelection(getObjectKey(row))"/>
@@ -63,7 +63,10 @@
                                 <td ng-repeat="column in cols ">
                                     <div ng-switch="isColumnLinkable(column,$index)">
                                         <a href="#/uiomatic/uioMaticTree/edit/{{getObjectKey(row)}}%3Ftype={{typeName}}" ng-switch-when="true">{{row[column]}}</a>
-                                        <span ng-switch-when="false">{{getCellContentDecoration(row, column)}}</span>
+                                        <span ng-switch-when="false" ng-switch="hasCellContentDecorator(row, column)">
+                                            <span ng-switch-when="true" ng-bind-html="getCellContentDecoration(row, column)"></span>
+                                            <span ng-switch-when="false">{{row[column]}}</span>
+                                        </span>
                                     </div>
                                 </td>
                             </tr>

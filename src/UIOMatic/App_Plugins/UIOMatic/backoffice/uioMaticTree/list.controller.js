@@ -56,7 +56,7 @@
             $scope.nameField = response.data.NameField.replace(' ', '_');
             $scope.readOnly = response.data.ReadOnly;
             $scope.rowCssDecorators = response.data.ListViewRowCssDecorators;
-            $scope.cellContentDecorators = response.data.ListViewRowCellContentDecorators;
+            $scope.cellContentDecorators = response.data.ListViewCellContentDecorators;
             $scope.linkableColumns = response.data.ListViewLinkColumns;
             $scope.customColumnsOrder = response.data.CustomColumnsOrder;
 
@@ -171,6 +171,16 @@
                 css += ' ' + decorator(row);
             }
             return css.trim();
+        };
+
+        $scope.hasCellContentDecorator = function (row, column) {
+            for (var i = 0; i < $scope.cellContentDecorators.length; i++) {
+                var decorator = new Function('return ' + $scope.cellContentDecorators[i])();
+                if (decorator(row, column) != null) {
+                    return true;
+                }
+            }
+            return false;
         };
 
         $scope.getCellContentDecoration = function (row, column) {
