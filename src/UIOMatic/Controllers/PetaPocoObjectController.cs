@@ -15,6 +15,7 @@ using Umbraco.Web.Editors;
 using Umbraco.Web.Mvc;
 using umbraco.IO;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 
 namespace UIOMatic.Controllers
 {
@@ -489,6 +490,8 @@ namespace UIOMatic.Controllers
                 autoIncrement = ((PrimaryKeyAttribute)primKeyAttri.First()).autoIncrement;
             }
 
+            var saveOptionsAttribute = Attribute.GetCustomAttribute(currentType, typeof(UIOMaticSaveOptionsAttribute)) as UIOMaticSaveOptionsAttribute;
+
             foreach (var prop in currentType.GetProperties())
             {
                 foreach (var attri in prop.GetCustomAttributes(true))
@@ -507,16 +510,33 @@ namespace UIOMatic.Controllers
             if (temp != null)
                 temp(this, new ObjectEventArgs(ob));
 
-            if (autoIncrement)
-                db.Insert(tableName,primaryKeyColum,ob);
-            else
-                db.Insert(ob);
+            var maxRetry = saveOptionsAttribute != null ? Math.Max(saveOptionsAttribute.RetryCount, 0) : 0;
+            for (var retry = 0; retry <= maxRetry; retry++)
+            {
+                try
+                {
+                    if (autoIncrement)
+                        db.Insert(tableName, primaryKeyColum, ob);
+                    else
+                        db.Insert(ob);
+
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    var errorMessage = string.Format("UIOMatic: Failed to create object of type '{0}' to database", currentType.FullName);
+                    LogHelper.Error(this.GetType(), errorMessage, ex);
+
+                    if (retry == maxRetry)
+                        throw;
+                }
+            }
+            
             var tmp = CreatedObject;
             if (tmp != null)
                 tmp(this, new ObjectEventArgs(ob));
 
             return ob;
-
         }
 
         public object PostUpdate(ExpandoObject objectToUpdate)
@@ -556,24 +576,38 @@ namespace UIOMatic.Controllers
             if (primKeyAttri.Any())
                 primaryKeyColum = ((PrimaryKeyAttribute)primKeyAttri.First()).Value;
 
+            var saveOptionsAttribute = Attribute.GetCustomAttribute(currentType, typeof(UIOMaticSaveOptionsAttribute)) as UIOMaticSaveOptionsAttribute;
+
             foreach (var prop in currentType.GetProperties())
             {
                 foreach (var attri in prop.GetCustomAttributes(true))
                 {
                     if (attri.GetType() == typeof(PrimaryKeyColumnAttribute))
                         primaryKeyColum = ((PrimaryKeyColumnAttribute)attri).Name ?? prop.Name;
-
                 }
-
-
             }
 
             var tmp = UpdatingObject;
             if (tmp != null)
                 tmp(this, new ObjectEventArgs(ob));
 
+            var maxRetry = saveOptionsAttribute != null ? Math.Max(saveOptionsAttribute.RetryCount, 0) : 0;
+            for (var retry = 0; retry <= maxRetry; retry++)
+            {
+                try
+                {
+                    db.Update(ob);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    var errorMessage = string.Format("UIOMatic: Failed to update object of type '{0}' to database", currentType.FullName);
+                    LogHelper.Error(this.GetType(), errorMessage, ex);
 
-            db.Update(ob);
+                    if (retry == maxRetry)
+                        throw;
+                }
+            }
 
             var temp = UpdatedObject;
             if (temp != null)

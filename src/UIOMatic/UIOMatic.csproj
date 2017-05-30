@@ -257,6 +257,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\UIOMaticAttribute.cs" />
+    <Compile Include="Attributes\UIOMaticSaveOptionsAttribute.cs" />
     <Compile Include="Attributes\UIOMaticFieldAttribute.cs" />
     <Compile Include="Attributes\UIOMaticIgnoreFieldAttribute.cs" />
     <Compile Include="Attributes\UIOMaticIgnoreFromListViewAttribute.cs" />
